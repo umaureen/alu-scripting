@@ -1,18 +1,22 @@
 #!/usr/bin/python3
-"""Script that fetches 10 hot posts for a given subreddit."""
+"""Script that fetch 10 hot post for a given subreddit."""
 import requests
 
 
 def top_ten(subreddit):
     """Print titles of first 10 hot posts for a given subreddit."""
-    url = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
-    headers = {'User-Agent': 'My User Agent 1.0'}
-    response = requests.get(url, headers=headers, allow_redirects=False)
-    
+    headers = {'User-Agent': 'MyAPI/0.0.1'}
+    subreddit_url = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
+    response = requests.get(subreddit_url, headers=headers, allow_redirects=False)
+
     if response.status_code == 200:
-        data = response.json()
-        children = data.get('data', {}).get('children', [])
-        for child in children:
-            print(child.get('data', {}).get('title'))
+        json_data = response.json()
+        children = json_data.get('data', {}).get('children', [])
+        
+        if children:
+            for i in range(min(10, len(children))):
+                print(children[i].get('data', {}).get('title'))
+        else:
+            print(None)
     else:
         print(None)
